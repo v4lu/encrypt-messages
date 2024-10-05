@@ -1,0 +1,40 @@
+version: "3"
+
+dotenv: [".env"]
+
+tasks:
+  goose-create:
+    desc: Create migration using goose
+    cmds:
+    - |
+      if [ ! -d "./migrations" ]; then
+        echo "Creating migrations folder..."
+        mkdir ./migrations
+      fi
+    - echo "Creating migration... {{.name}}"
+    - goose -dir ./migrations create "{{.name}}" sql
+
+  goose-up:
+    desc: Run migration using goose
+    cmds:
+    - echo "Migrating up..."
+    - goose -dir ./migrations postgres "${DB_URL}" up
+
+  goose-down:
+    desc: Rollback migration using goose
+    cmds:
+    - echo "Rollback migration..."
+    - goose -dir ./migrations postgres "${DB_URL}" down
+
+  swag-docs:
+    desc: Generate swagger docs
+    cmds:
+    - echo "Generating swagger docs"
+    - swag init --parseDependency --parseInternal --parseDepth 2 -g cmd/server/main.go --output ./docs
+
+  build:
+    desc: Build the project
+    cmds:
+    - echo "Building..."
+    - go build -o tmp/server ./cmd/server
+
