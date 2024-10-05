@@ -22,6 +22,7 @@ func SetupRoutes(database *repository.DB, log *zerolog.Logger) http.Handler {
 		r.Get("/", handler.GetKey)
 		r.Patch("/status", handler.UpdateKeyStatus)
 		r.Get("/active", handler.ListActiveKeys)
+		r.Post("/rotate", handler.RotateKey)
 	})
 
 	r.Route("/v1/crypto", func(r chi.Router) {
