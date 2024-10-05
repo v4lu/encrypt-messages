@@ -1,0 +1,15 @@
+services:
+  enc:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9002:9002"
+    networks:
+      - core_ve
+
+
+networks:
+  core_ve:
+    external: true
+    name: core_ve
