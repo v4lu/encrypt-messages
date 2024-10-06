@@ -42,15 +42,6 @@ func (db *DB) GetKey(ctx context.Context, keyID uuid.UUID) (*model.EncryptionKey
 	return &key, nil
 }
 
-func (db *DB) UpdateKeyStatus(ctx context.Context, keyID uuid.UUID, status string) error {
-	query := `
-		UPDATE encryption_keys
-		SET status = $1
-		WHERE key_id = $2`
-	_, err := db.ExecContext(ctx, query, status, keyID)
-	return err
-}
-
 func (db *DB) ListActiveKeys(ctx context.Context) ([]*model.EncryptionKey, error) {
 	query := `
 		SELECT id, key_id, encrypted_key_material, creation_date, expiration_date, status, version

@@ -10,24 +10,23 @@ import (
 )
 
 func SetupRoutes(database *repository.DB, log *zerolog.Logger) http.Handler {
-	handler := &KeyHandler{db: database, log: log}
-
+	kh := &KeyHandler{db: database, log: log}
+	ch := &CryptoHandler{db: database, log: log}
 	r := chi.NewRouter()
 
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
 	r.Route("/v1/keys", func(r chi.Router) {
-		r.Post("/", handler.CreateKey)
-		r.Get("/", handler.GetKey)
-		r.Patch("/status", handler.UpdateKeyStatus)
-		r.Get("/active", handler.ListActiveKeys)
-		r.Post("/rotate", handler.RotateKey)
+		r.Post("/", kh.CreateKey)
+		r.Get("/", kh.GetKey)
+		r.Get("/active", kh.ListActiveKeys)
+		r.Post("/rotate", kh.RotateKey)
 	})
 
 	r.Route("/v1/crypto", func(r chi.Router) {
-		r.Post("/encrypt", handler.EncryptMessage)
-		r.Post("/decrypt", handler.DecryptMessage)
+		r.Post("/encrypt", ch.EncryptMessage)
+		r.Post("/decrypt", ch.DecryptMessage)
 	})
 
 	return r
